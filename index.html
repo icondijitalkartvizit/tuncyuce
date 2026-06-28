@@ -214,11 +214,6 @@
             </a>
 
             <div class="divider"></div>
-
-            <a id="btn-website" class="btn" href="" target="_blank">
-                <span id="title-website" class="btn-title"></span>
-                <span id="desc-website" class="btn-desc"></span>
-            </a>
         </div>
     </div>
 
@@ -236,29 +231,24 @@
         // ==========================================
         const AYARLAR = {
             arkaPlanTipi: "renk", 
-            arkaPlanRengi: "#f4f6f9", 
+            arkaPlanRengi: "#808080", 
             arkaPlanResmi: "https://raw.githubusercontent.com/icondijitalkartvizit/kart/refs/heads/main/IMG-20260628-WA0022.jpg", 
-            profilFoto: "https://raw.githubusercontent.com/icondijitalkartvizit/kart/refs/heads/main/IMG-20260628-WA0022.jpg", 
+            profilFoto: "", 
             
-            isimSoyisim: "Selman Yıldız",
-            unvanMeslek: "Kurucu & Satış Yöneticisi",
+            isimSoyisim: "TUNÇ YÜCE",
+            unvanMeslek: "Profesyonel Saç Tasarım",
 
-            telefonNo: "+905461075789", 
-            whatsappNo: "+905461075789", 
-            instagramKullaniciAdi: "sellmanyildiz", 
+            telefonNo: "+905071432880", 
+            whatsappNo: "+905071432880", 
+            instagramKullaniciAdi: "tuncyucesactasarim", 
             ödemeBilgileri: `
-                <p><strong>Banka:</strong> Ziraat Bankası</p>
-                <p><strong>Alıcı:</strong> Selman Yıldı</p>
-                <p><strong>IBAN:</strong> TR00 0000 0000 0000 0000 0000 00</p>
+                <p><strong>Alıcı:</strong> Tunç Yüce</p>
+                <p><strong>IBAN:</strong> TR18 0001 0090 1031 3338 3050 01</p>
                 <br>
-                <p>Kredi kartı ile ödeme için kurumsal link isteyiniz.</p>
             `,
-            adresBaslik: "OFİS ADRESİMİZ",
-            adresAciklama: "Folkart Towers A Kule Kat:18 İzmir.",
-            adresHaritaLinki: "https://maps.google.com", 
-            webSitesiBaslik: "KURUMSAL WEB SİTEMİZ",
-            webSitesiAciklama: "Güncel Projelerimizi Ve Hizmetlerimizi İnceleyin.",
-            webSitesiLinki: "https://www.google.com"
+            adresBaslik: "232 GNG ERKEK KUAFÖRÜ",
+            adresAciklama: "Dukkan Adresimiz - 232 GNG",
+            adresHaritaLinki: "https://maps.app.goo.gl/5MMcAXqgnpNuMAbg9", 
         };
 
         // Arka Plan ve Data Atamaları
@@ -278,14 +268,10 @@
         document.getElementById('btn-instagram').href = "https://instagram.com/" + AYARLAR.instagramKullaniciAdi;
         document.getElementById('desc-instagram').innerText = "@" + AYARLAR.instagramKullaniciAdi;
         document.getElementById('payment-text').innerHTML = AYARLAR.ödemeBilgileri;
-        
+      
         document.getElementById('title-adres').innerText = AYARLAR.adresBaslik;
         document.getElementById('desc-adres').innerText = AYARLAR.adresAciklama;
         document.getElementById('btn-adres').href = AYARLAR.adresHaritaLinki;
-
-        document.getElementById('title-website').innerText = AYARLAR.webSitesiBaslik;
-        document.getElementById('desc-website').innerText = AYARLAR.webSitesiAciklama;
-        document.getElementById('btn-website').href = AYARLAR.webSitesiLinki;
 
         function openModal() { document.getElementById('payment-modal').style.display = 'flex'; }
         function closeModal(e) { document.getElementById('payment-modal').style.display = 'none'; }
