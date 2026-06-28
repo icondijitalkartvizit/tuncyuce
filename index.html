@@ -1,34 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <script>
-  window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isNFC = urlParams.get('source') === 'nfc';
-    
-    // Sayfanın yenilenip yenilenmediğini tarayıcı performansından anla
-    const isReloaded = performance.getEntriesByType("navigation")[0]?.type === "reload";
-
-    // DURUM 1: Sayfa yenilendiyse VEYA URL'de NFC parametresi yoksa ENGELLE
-    if (isReloaded || !isNFC) {
-      document.body.innerHTML = `
-        <div style="text-align: center; margin-top: 50px; font-family: sans-serif; padding: 20px;">
-          <h1 style="color: #ff4d4d;">Bu kart zaten bir kez okutuldu.</h1>
-          <p style="color: #666;">Tekrar açmak için kartı yeniden fiziksel olarak telefonunuza okutun.</p>
-        </div>
-      `;
-    } 
-    // DURUM 2: Kart ilk defa veya yeniden FİZİKSEL olarak okutuldu
-    else {
-      // URL'deki "?source=nfc" kısmını çaktırmadan temizle (Kullanıcı yenilerse düz linki yenilesin diye)
-      const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      window.history.replaceState({ path: cleanURL }, '', cleanURL);
-    }
-  };
-</script>
-
-
-
    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dijital Kartvizit</title>
@@ -193,6 +165,45 @@
             color: #94a3b8;
         }
     </style>
+<style id="anti-blink">
+  body { display: none !important; }
+</style>
+
+<script>
+  (function() {
+    // URL'deki parametreyi kontrol et
+    const urlParams = new URLSearchParams(window.location.search);
+    const isNFC = urlParams.get('source') === 'nfc';
+
+    // Sayfa DOM içeriği hazır olduğunda (Görsellerin yüklenmesini beklemeden en hızlı an)
+    document.addEventListener("DOMContentLoaded", function() {
+      
+      // Eğer fiziksel okutma ise (?source=nfc varsa)
+      if (isNFC) {
+        // 1. URL'deki ?source=nfc kısmını temizle (Böylece yenilerse bir daha açılmayacak)
+        const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanURL }, '', cleanURL);
+        
+        // 2. Sayfayı görünür yap
+        const styleEl = document.getElementById('anti-blink');
+        if (styleEl) styleEl.remove();
+        document.body.style.display = "block";
+      } 
+      // Eğer NFC ile gelinmediyse (Doğrudan link, sayfa yenileme vs.)
+      else {
+        // Engelleme ekranını bas ve sayfayı görünür yap (Sadece uyarı görünecek)
+        document.body.innerHTML = `
+          <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
+            <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
+            <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak telefonunuza okutun.</p>
+          </div>
+        `;
+        document.body.style.display = "block";
+      }
+    });
+  })();
+</script>
+  
 </head>
 <body>
 
