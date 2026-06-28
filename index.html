@@ -171,38 +171,34 @@
 
 <script>
   (function() {
-    // URL'deki parametreyi kontrol et
     const urlParams = new URLSearchParams(window.location.search);
     const isNFC = urlParams.get('source') === 'nfc';
+    const hasId = urlParams.get('id');
+    const isReloaded = sessionStorage.getItem('page_loaded_before');
 
-    // Sayfa DOM içeriği hazır olduğunda (Görsellerin yüklenmesini beklemeden en hızlı an)
     document.addEventListener("DOMContentLoaded", function() {
-      
-      // Eğer fiziksel okutma ise (?source=nfc varsa)
-      if (isNFC) {
-        // 1. URL'deki ?source=nfc kısmını temizle (Böylece yenilerse bir daha açılmayacak)
-        const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({ path: cleanURL }, '', cleanURL);
-        
-        // 2. Sayfayı görünür yap
+      if (isNFC && hasId && !isReloaded) {
+        sessionStorage.setItem('page_loaded_before', 'true');
         const styleEl = document.getElementById('anti-blink');
         if (styleEl) styleEl.remove();
         document.body.style.display = "block";
-      } 
-      // Eğer NFC ile gelinmediyse (Doğrudan link, sayfa yenileme vs.)
-      else {
-        // Engelleme ekranını bas ve sayfayı görünür yap (Sadece uyarı görünecek)
+      } else {
         document.body.innerHTML = `
-          <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
-            <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
-            <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak telefonunuza okutun.</p>
+          <div style="text-align: center; margin-top: 100px; font-family: sans-serif;">
+            <h1 style="color: #ff4d4d;">Bu kart zaten bir kez okutuldu.</h1>
+            <p style="color: #666;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
           </div>
         `;
         document.body.style.display = "block";
       }
     });
+
+    window.onbeforeunload = function() {
+      sessionStorage.removeItem('page_loaded_before');
+    };
   })();
 </script>
+
   
 </head>
 <body>
