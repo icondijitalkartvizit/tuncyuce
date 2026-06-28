@@ -1,7 +1,42 @@
 <!DOCTYPE html>
 <html lang="tr">
  <head>
-   <meta charset="UTF-8">
+   <style id="anti-blink">
+  body { display: none !important; }
+</style>
+
+<script>
+  (function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isNFC = urlParams.get('source') === 'nfc';
+    const hasId = urlParams.get('id');
+    const isReloaded = sessionStorage.getItem('page_loaded_before');
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Eğer go.html üzerinden yeni bir rastgele numarayla gelindiyse sayfayı aç
+      if (isNFC && hasId && !isReloaded) {
+        sessionStorage.setItem('page_loaded_before', 'true');
+        const styleEl = document.getElementById('anti-blink');
+        if (styleEl) styleEl.remove();
+        document.body.style.display = "block";
+      } else {
+        // Sayfa yenilendiyse veya link kopyalandıysa engelle
+        document.body.innerHTML = `
+          <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
+            <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
+            <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
+          </div>
+        `;
+        document.body.style.display = "block";
+      }
+    });
+
+    window.onbeforeunload = function() {
+      sessionStorage.removeItem('page_loaded_before');
+    };
+  })();
+</script>
+  <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dijital Kartvizit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
