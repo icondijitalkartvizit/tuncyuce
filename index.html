@@ -20,7 +20,7 @@
       const timeDiff = now - parseInt(linkTime || 0);
 
       // Eğer NFC ile gelindiyse, ID varsa VE link son 5 saniye (5000 ms) içinde üretildiyse SAYFAYI AÇ
-      if (source === "nfc" && hasId && linkTime && timeDiff < 5000) {
+      if (source === "nfc" && hasId && linkTime && timeDiff < 2000) {
         const styleEl = document.getElementById('anti-blink');
         if (styleEl) styleEl.remove();
         document.body.style.display = "block";
