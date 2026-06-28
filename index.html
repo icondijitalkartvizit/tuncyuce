@@ -2,27 +2,24 @@
 <html lang="tr">
 <head>
   <script>
-  // Sayfa yüklenmesini beklemeden, tarayıcı linki görür görmez çalışır
-  (function() {
+  window.onload = function() {
+    // URL'deki parametreleri kontrol et (?source=nfc var mı?)
     const urlParams = new URLSearchParams(window.location.search);
     const isNFC = urlParams.get('source') === 'nfc';
 
-    if (!isNFC) {
-      // Eğer source=nfc yoksa, sayfa yüklenmesini bekle ve hata ekranını bas
-      window.addEventListener('DOMContentLoaded', () => {
-        document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu.</h1><p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden okutun.</p>";
-      });
+    // Bu sefer kalıcı hafızayı (localStorage) kontrol ediyoruz
+    if (!isNFC || localStorage.getItem('card_opened')) {
+      
+      // Senin belirttiğin engelleme ekranı kodu:
+      document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu.</h1><p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden okutun.</p>";
+    
     } else {
-      // Eğer NFC ile gelindiyse, adresi ÇAKTIRMADAN anında temizle
-      try {
-        const temizURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({}, document.title, temizURL);
-      } catch (e) {
-        console.error("URL temizlenirken bir hata oluştu:", e);
-      }
+      // Kart NFC ile ilk kez okutulduysa, KALICI işareti koy
+      localStorage.setItem('card_opened', 'true');
     }
-  })();
+  };
 </script>
+
    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dijital Kartvizit</title>
