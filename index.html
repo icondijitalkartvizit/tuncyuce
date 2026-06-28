@@ -7,15 +7,15 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isNFC = urlParams.get('source') === 'nfc';
 
-    // Eğer link NFC karttan gelinerek açılmadıysa VEYA bu oturumda kart zaten bir kez açıldıysa
-    if (!isNFC || sessionStorage.getItem('card_opened')) {
+    // Bu sefer kalıcı hafızayı (localStorage) kontrol ediyoruz
+    if (!isNFC || localStorage.getItem('card_opened')) {
       
       // Senin belirttiğin engelleme ekranı kodu:
       document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu.</h1><p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden okutun.</p>";
     
     } else {
-      // Kart NFC ile ilk kez okutulduysa, açıldığına dair işareti koy
-      sessionStorage.setItem('card_opened', 'true');
+      // Kart NFC ile ilk kez okutulduysa, KALICI işareti koy
+      localStorage.setItem('card_opened', 'true');
     }
   };
 </script>
