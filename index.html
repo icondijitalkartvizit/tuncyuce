@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+ <script>
+  const SUPABASE_URL = "https://subutyduweqeyojvbcoa.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_x4IB0U5vh44CSIZwleQqxQ_zhF3aI-c";
+  
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  window.onload = async function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('source'); // veya token
+    
+    if (token) {
+       const { data, error } = await supabase
+         .from('Girişler')
+         .select('*')
+         .eq('token', token)
+         .single();
+         
+       if (data) {
+          // Zaten kullanılmışsa hata mesajını göster
+          document.body.innerHTML = "<h1>Bu kart zaten bir kez okutulup kullanıldı!</h1>";
+       } else {
+          // Henüz kullanılmadıysa veri tabanına kaydet
+          await supabase
+            .from('Girişler')
+            .insert([{ token: token }]);
+       }
+    }
+  };
+    </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   // Sayfa yüklenmesini beklemeden, tarayıcı linki görür görmez çalışır
   (function() {
