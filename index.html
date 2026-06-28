@@ -2,10 +2,7 @@
 <html lang="tr">
  <head>
    <style id="anti-blink">
-  body { display: none !important; }
-</style>
-
-<style id="anti-blink">
+  b<style id="anti-blink">
   body { display: none !important; }
 </style>
 
@@ -14,36 +11,33 @@
     const urlParams = new URLSearchParams(window.location.search);
     const source = urlParams.get('source');
     const hasId = urlParams.get('id');
-
-    // index.html üzerindeyken sayfa yenilendi mi kontrolü
-    const navEntry = performance.getEntriesByType("navigation")[0];
-    const isReloadedHere = navEntry ? navEntry.type === "reload" : false;
+    const linkTime = urlParams.get('t'); // go.html'in linki ürettiği zaman
 
     document.addEventListener("DOMContentLoaded", function() {
+      const now = new Date().getTime(); // Sayfanın şu anki açılış zamanı
       
-      // DURUM 1: go.html veya index.html üzerinde sayfa yenilendiyse VEYA nfc parametresi yoksa ENGELLE
-      if (isReloadedHere || source === "block" || source !== "nfc" || !hasId) {
-        showBlockPage();
+      // Linkin üretilme zamanı ile şu anki zaman arasındaki farkı bul (milisaniye cinsinden)
+      const timeDiff = now - parseInt(linkTime || 0);
+
+      // Eğer NFC ile gelindiyse, ID varsa VE link son 5 saniye (5000 ms) içinde üretildiyse SAYFAYI AÇ
+      if (source === "nfc" && hasId && linkTime && timeDiff < 5000) {
+        const styleEl = document.getElementById('anti-blink');
+        if (styleEl) styleEl.remove();
+        document.body.style.display = "block";
       } 
-      // DURUM 2: Her şey yolunda, fiziksel okutma yapıldı, SAYFAYI AÇ
+      // Link 5 saniyeden eskiyse (yani kullanıcı sayfayı yenilediyse veya linki kopyaladıysa) ENGELLE
       else {
+        document.body.innerHTML = `
+          <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
+            <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
+            <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
+          </div>
+        `;
         const styleEl = document.getElementById('anti-blink');
         if (styleEl) styleEl.remove();
         document.body.style.display = "block";
       }
     });
-
-    function showBlockPage() {
-      document.body.innerHTML = `
-        <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
-          <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
-          <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
-        </div>
-      `;
-      const styleEl = document.getElementById('anti-blink');
-      if (styleEl) styleEl.remove();
-      document.body.style.display = "block";
-    }
   })();
 </script>
 
