@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <script>
+  // Sayfa yüklendiğinde çalışır
+  window.onload = function() {
+    // Eğer bu oturumda kart zaten okutulup sayfa açıldıysa
+    if (sessionStorage.getItem('card_opened')) {
+      // Sayfa içeriğini temizle veya kullanıcıyı uyar/başka yere yönlendir
+      document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu.</h1><p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden okutun.</p>";
+    } else {
+      // İlk kez açılıyorsa, açıldığına dair işareti koy
+      sessionStorage.setItem('card_opened', 'true');
+    }
+  };
+  </script>
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijital Kartvizit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Genel Tasarım Ayarları */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9; 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Ana İçerik Kapsayıcısı */
+        #kartvizit-icerik {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .container {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            margin: auto; 
+        }
+
+        /* Profil Alanı */
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        /* İsim ve Unvan Stilleri */
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .profile-title {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        /* Buton Yapısı */
+        .btn {
+            display: block;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; 
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.03);
+        }
+
+        .btn-title {
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .btn-desc {
+            font-size: 13px;
+            color: #718096;
+            display: block;
+        }
+
+        /* Özel Ayraç (Çizgi) */
+        .divider {
+            width: 50%;
+            height: 5px;
+            background: #e2e8f0;
+            margin: 25px auto;
+            border-radius: 10px;
+        }
+
+        /* Ödeme Bilgileri Penceresi (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="kartvizit-icerik">
+        <div class="container">
+            <img id="profile-pic" class="profile-img" src="" alt="Profil">
+            
+            <div id="profile-name" class="profile-name"></div>
+            <div id="profile-title" class="profile-title"></div>
+
+            <a id="btn-rehber" class="btn" href="#">
+                <span class="btn-title">REHBERE KAYDET</span>
+                <span class="btn-desc">Numaramı Rehberinize Kaydedin.</span>
+            </a>
+
+            <a id="btn-whatsapp" class="btn" href="" target="_blank">
+                <span class="btn-title">WHATSAPP'TAN YAZIN</span>
+                <span class="btn-desc">Bana WhatsApp'tan Ulaşın.</span>
+            </a>
+
+            <a id="btn-instagram" class="btn" href="" target="_blank">
+                <span class="btn-title">INSTAGRAM HESABIM</span>
+                <span id="desc-instagram" class="btn-desc"></span>
+            </a>
+
+            <div class="btn" onclick="openModal()">
+                <span class="btn-title">ÖDEME BİLGİLERİM</span>
+                <span class="btn-desc">Ödeme Bilgilerim İçin Tıklayınız.</span>
+            </div>
+
+            <a id="btn-adres" class="btn" href="" target="_blank">
+                <span id="title-adres" class="btn-title"></span>
+                <span id="desc-adres" class="btn-desc"></span>
+            </a>
+
+            <div class="divider"></div>
+
+            <a id="btn-website" class="btn" href="" target="_blank">
+                <span id="title-website" class="btn-title"></span>
+                <span id="desc-website" class="btn-desc"></span>
+            </a>
+        </div>
+    </div>
+
+    <div id="payment-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div class="modal-title">ÖDEME BİLGİLERİ</div>
+            <div id="payment-text"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // MÜŞTERİ AYARLARI
+        // ==========================================
+        const AYARLAR = {
+            arkaPlanTipi: "renk", 
+            arkaPlanRengi: "#f4f6f9", 
+            arkaPlanResmi: "https://raw.githubusercontent.com/icondijitalkartvizit/kart/refs/heads/main/IMG-20260628-WA0022.jpg", 
+            profilFoto: "https://raw.githubusercontent.com/icondijitalkartvizit/kart/refs/heads/main/IMG-20260628-WA0022.jpg", 
+            
+            isimSoyisim: "Selman Yıldız",
+            unvanMeslek: "Kurucu & Satış Yöneticisi",
+
+            telefonNo: "+905461075789", 
+            whatsappNo: "+905461075789", 
+            instagramKullaniciAdi: "sellmanyildiz", 
+            ödemeBilgileri: `
+                <p><strong>Banka:</strong> Ziraat Bankası</p>
+                <p><strong>Alıcı:</strong> Selman Yıldı</p>
+                <p><strong>IBAN:</strong> TR00 0000 0000 0000 0000 0000 00</p>
+                <br>
+                <p>Kredi kartı ile ödeme için kurumsal link isteyiniz.</p>
+            `,
+            adresBaslik: "OFİS ADRESİMİZ",
+            adresAciklama: "Folkart Towers A Kule Kat:18 İzmir.",
+            adresHaritaLinki: "https://maps.google.com", 
+            webSitesiBaslik: "KURUMSAL WEB SİTEMİZ",
+            webSitesiAciklama: "Güncel Projelerimizi Ve Hizmetlerimizi İnceleyin.",
+            webSitesiLinki: "https://www.google.com"
+        };
+
+        // Arka Plan ve Data Atamaları
+        document.body.style.backgroundColor = AYARLAR.arkaPlanRengi;
+        if (AYARLAR.arkaPlanTipi === "resim" && AYARLAR.arkaPlanResmi.trim() !== "") {
+            document.body.style.backgroundImage = `url('${AYARLAR.arkaPlanResmi}')`;
+        } else {
+            document.body.style.backgroundImage = "none";
+        }
+
+        document.getElementById('profile-pic').src = AYARLAR.profilFoto;
+        document.getElementById('profile-name').innerText = AYARLAR.isimSoyisim;
+        document.getElementById('profile-title').innerText = AYARLAR.unvanMeslek;
+
+        document.getElementById('btn-rehber').href = "tel:" + AYARLAR.telefonNo;
+        document.getElementById('btn-whatsapp').href = "https://wa.me/" + AYARLAR.whatsappNo;
+        document.getElementById('btn-instagram').href = "https://instagram.com/" + AYARLAR.instagramKullaniciAdi;
+        document.getElementById('desc-instagram').innerText = "@" + AYARLAR.instagramKullaniciAdi;
+        document.getElementById('payment-text').innerHTML = AYARLAR.ödemeBilgileri;
+        
+        document.getElementById('title-adres').innerText = AYARLAR.adresBaslik;
+        document.getElementById('desc-adres').innerText = AYARLAR.adresAciklama;
+        document.getElementById('btn-adres').href = AYARLAR.adresHaritaLinki;
+
+        document.getElementById('title-website').innerText = AYARLAR.webSitesiBaslik;
+        document.getElementById('desc-website').innerText = AYARLAR.webSitesiAciklama;
+        document.getElementById('btn-website').href = AYARLAR.webSitesiLinki;
+
+        function openModal() { document.getElementById('payment-modal').style.display = 'flex'; }
+        function closeModal(e) { document.getElementById('payment-modal').style.display = 'none'; }
+    </script>
+</body>
+</html>
