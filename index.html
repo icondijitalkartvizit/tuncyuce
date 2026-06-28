@@ -5,47 +5,48 @@
   body { display: none !important; }
 </style>
 
+<style id="anti-blink">
+  body { display: none !important; }
+</style>
+
 <script>
   (function() {
     const urlParams = new URLSearchParams(window.location.search);
-    const isNFC = urlParams.get('source') === 'nfc';
+    const source = urlParams.get('source');
     const hasId = urlParams.get('id');
-    
-    // Tarayıcının sayfayı yenileyip yenilemediğini kontrol et
-    const isReloaded = sessionStorage.getItem('page_loaded_before');
+
+    // index.html üzerindeyken sayfa yenilendi mi kontrolü
+    const navEntry = performance.getEntriesByType("navigation")[0];
+    const isReloadedHere = navEntry ? navEntry.type === "reload" : false;
 
     document.addEventListener("DOMContentLoaded", function() {
-      // Eğer NFC ile gelindiyse VE sayfa yukarıdan çekip yenilenmediyse SAYFAYI AÇ
-      if (isNFC && hasId && !isReloaded) {
-        sessionStorage.setItem('page_loaded_before', 'true');
-        const styleEl = document.getElementById('anti-blink');
-        if (styleEl) styleEl.remove();
-        document.body.style.display = "block";
-      } else {
-        // Kart zaten açıldıysa veya yenilendiyse uyarı ekranını yaz ve GÖSTER
-        document.body.innerHTML = `
-          <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
-            <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
-            <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
-          </div>
-        `;
-        // Beyaz ekran kalmasın diye stili kaldırıp uyarıyı görünür yapıyoruz
+      
+      // DURUM 1: go.html veya index.html üzerinde sayfa yenilendiyse VEYA nfc parametresi yoksa ENGELLE
+      if (isReloadedHere || source === "block" || source !== "nfc" || !hasId) {
+        showBlockPage();
+      } 
+      // DURUM 2: Her şey yolunda, fiziksel okutma yapıldı, SAYFAYI AÇ
+      else {
         const styleEl = document.getElementById('anti-blink');
         if (styleEl) styleEl.remove();
         document.body.style.display = "block";
       }
     });
 
-    // BEYAZ SAYFAYI ÇÖZEN KRİTİK KOD: 
-    // Kullanıcı sayfadan ayrıldığı an (veya kartı tekrar okuttuğunda) hafızayı sıfırla
-    window.addEventListener('pagehide', function() {
-      sessionStorage.removeItem('page_loaded_before');
-    });
-    window.onbeforeunload = function() {
-      sessionStorage.removeItem('page_loaded_before');
-    };
+    function showBlockPage() {
+      document.body.innerHTML = `
+        <div style="text-align: center; margin-top: 100px; font-family: sans-serif; padding: 20px;">
+          <h1 style="color: #ff4d4d; font-size: 24px;">Bu kart zaten bir kez okutuldu.</h1>
+          <p style="color: #666; font-size: 16px;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
+        </div>
+      `;
+      const styleEl = document.getElementById('anti-blink');
+      if (styleEl) styleEl.remove();
+      document.body.style.display = "block";
+    }
   })();
 </script>
+
   
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
