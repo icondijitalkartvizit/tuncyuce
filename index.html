@@ -5,26 +5,28 @@
   window.onload = function() {
     const urlParams = new URLSearchParams(window.location.search);
     const isNFC = urlParams.get('source') === 'nfc';
+    
+    // Sayfanın yenilenip yenilenmediğini tarayıcı performansından anla
+    const isReloaded = performance.getEntriesByType("navigation")[0]?.type === "reload";
 
-    // localStorage yerine sessionStorage (oturum hafızası) kullanıyoruz
-    const alreadyOpenedInSession = sessionStorage.getItem('card_opened');
-
-    // DURUM 1: Eğer NFC ile gelinmediyse VEYA bu sekmede kart zaten daha önce açıldıysa engelle
-    if (!isNFC || alreadyOpenedInSession) {
-      
+    // DURUM 1: Sayfa yenilendiyse VEYA URL'de NFC parametresi yoksa ENGELLE
+    if (isReloaded || !isNFC) {
       document.body.innerHTML = `
-        <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-          <h1>Bu kart zaten bir kez okutuldu.</h1>
-          <p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden fiziksel olarak okutun.</p>
+        <div style="text-align: center; margin-top: 50px; font-family: sans-serif; padding: 20px;">
+          <h1 style="color: #ff4d4d;">Bu kart zaten bir kez okutuldu.</h1>
+          <p style="color: #666;">Tekrar açmak için kartı yeniden fiziksel olarak telefonunuza okutun.</p>
         </div>
       `;
-    
-    } else {
-      // DURUM 2: Kart NFC ile bu sekmede İLK KEZ okutuldu, işareti koy
-      sessionStorage.setItem('card_opened', 'true');
+    } 
+    // DURUM 2: Kart ilk defa veya yeniden FİZİKSEL olarak okutuldu
+    else {
+      // URL'deki "?source=nfc" kısmını çaktırmadan temizle (Kullanıcı yenilerse düz linki yenilesin diye)
+      const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({ path: cleanURL }, '', cleanURL);
     }
   };
 </script>
+
 
 
    <meta charset="UTF-8">
