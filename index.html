@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
+ <head>
    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dijital Kartvizit</title>
@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        body {
+        <body> {
             background-color: #f4f6f9; 
             background-size: cover;
             background-position: center;
@@ -164,44 +164,9 @@
             cursor: pointer;
             color: #94a3b8;
         }
-    </style>
-<style id="anti-blink">
-  body { display: none !important; }
-</style>
-
-<script>
-  (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isNFC = urlParams.get('source') === 'nfc';
-    const hasId = urlParams.get('id');
-    const isReloaded = sessionStorage.getItem('page_loaded_before');
-
-    document.addEventListener("DOMContentLoaded", function() {
-      if (isNFC && hasId && !isReloaded) {
-        sessionStorage.setItem('page_loaded_before', 'true');
-        const styleEl = document.getElementById('anti-blink');
-        if (styleEl) styleEl.remove();
-        document.body.style.display = "block";
-      } else {
-        document.body.innerHTML = `
-          <div style="text-align: center; margin-top: 100px; font-family: sans-serif;">
-            <h1 style="color: #ff4d4d;">Bu kart zaten bir kez okutuldu.</h1>
-            <p style="color: #666;">Tekrar açmak için kartı yeniden fiziksel olarak okutun.</p>
-          </div>
-        `;
-        document.body.style.display = "block";
-      }
-    });
-
-    window.onbeforeunload = function() {
-      sessionStorage.removeItem('page_loaded_before');
-    };
-  })();
-</script>
-
-  
-</head>
-<body>
+    </style>  
+  </head>
+   <body>
 
     <div id="kartvizit-icerik">
         <div class="container">
