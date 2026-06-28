@@ -35,27 +35,7 @@ window.onload = async function() {
   };
     </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-  // Sayfa yüklenmesini beklemeden, tarayıcı linki görür görmez çalışır
-  (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isNFC = urlParams.get('source') === 'nfc';
-
-    if (!isNFC) {
-      // Eğer source=nfc yoksa, sayfa yüklenmesini bekle ve hata ekranını bas
-      window.addEventListener('DOMContentLoaded', () => {
-        document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu.</h1><p>Tekrar açmak için tarayıcı sekmesini kapatıp kartı yeniden okutun.</p>";
-      });
-    } else {
-      // Eğer NFC ile gelindiyse, adresi ÇAKTIRMADAN anında temizle
-      try {
-        const temizURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({}, document.title, temizURL);
-      } catch (e) {
-        console.error("URL temizlenirken bir hata oluştu:", e);
-      }
-    }
-  })();
-</script>
+  
 
    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
