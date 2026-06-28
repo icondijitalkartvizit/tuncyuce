@@ -7,25 +7,29 @@
   
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  window.onload = async function() {
+window.onload = async function() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('source'); // veya token
-    
+
     if (token) {
-       const { data, error } = await supabase
-         .from('Girişler')
-         .select('*')
-         .eq('token', token)
-         .single();
-         
-       if (data) {
-          // Zaten kullanılmışsa hata mesajını göster
-          document.body.innerHTML = "<h1>Bu kart zaten bir kez okutulup kullanıldı!</h1>";
-       } else {
-          // Henüz kullanılmadıysa veri tabanına kaydet
-          await supabase
-            .from('Girişler')
-            .insert([{ token: token }]);
+        const { data, error } = await supabase.rpc('tokendogrulama', { inputtoken: token });
+
+        if (error) {
+            console.error(error);
+        } else {
+            if (data === true) {
+                // Token geçerli ve yeni kullanıldı
+                document.body.innerHTML = "<h1>Hoş geldiniz!</h1>";
+            } else {
+                // Token daha önce kullanılmış veya geçersiz
+                document.body.innerHTML = "<h1>Bu kart zaten bir kez okutuldu</h1>";
+            }
+        }
+    }
+};
+
+```
+
        }
     }
   };
